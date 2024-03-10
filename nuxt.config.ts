@@ -1,5 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
-const appName = process.env.NUXT_PUBLIC_APP_NAME ?? 'ChatGPT UI'
+const appName = process.env.NUXT_PUBLIC_APP_NAME ?? 'ChatGPT UI';
 export default defineNuxtConfig({
     debug: process.env.NODE_ENV !== 'production',
     ssr: process.env.SSR !== 'false',
@@ -13,7 +13,8 @@ export default defineNuxtConfig({
             appName: appName,
             typewriter: false,
             typewriterDelay: 50,
-            customApiKey: false
+            customApiKey: false,
+            serverDomain: process.env.SERVER_DOMAIN // Ensure this is set in your environment variables
         }
     },
     build: {
@@ -25,6 +26,7 @@ export default defineNuxtConfig({
         'highlight.js/styles/panda-syntax-dark.css',
     ],
     modules: [
+        '@nuxtjs/proxy', // Add this line
         '@kevinmarrec/nuxt-pwa',
         '@nuxtjs/color-mode',
         '@nuxtjs/i18n'
@@ -79,5 +81,12 @@ export default defineNuxtConfig({
         vueI18n: {
             fallbackLocale: 'en',
         },
+    },
+    proxy: {
+      '/api/': { 
+        target: process.env.SERVER_DOMAIN, 
+        pathRewrite: { '^/api/': '' }, 
+        changeOrigin: true 
+      }
     }
-})
+});
